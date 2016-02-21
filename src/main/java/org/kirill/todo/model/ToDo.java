@@ -1,6 +1,7 @@
 package org.kirill.todo.model;
 
 import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonObject;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,18 @@ public class ToDo {
         this.completed = completed;
         this.order = order;
         this.url = url;
+    }
+
+    public void modify(JsonObject jsonObject) {
+        if (jsonObject.containsKey("title")) {
+            title = jsonObject.getString("title");
+        }
+        if (jsonObject.containsKey("completed")) {
+            completed = jsonObject.getBoolean("completed");
+        }
+        if (jsonObject.containsKey("order")) {
+            order = jsonObject.getInteger("order");
+        }
     }
 
     @Override
@@ -63,6 +76,14 @@ public class ToDo {
 
     public int getId() {
         return id;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 
     public Boolean getCompleted() {

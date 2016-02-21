@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class ToDoController {
 
     private static ToDoCollection toDoCollection = new ToDoCollection();
+
     public static void options(RoutingContext ctx) {
         HttpServerResponse response = ctx.response();
         response.putHeader("content-type", "application/json");
@@ -45,7 +46,19 @@ public class ToDoController {
     }
 
     public static void modifyToDo(RoutingContext ctx) {
+        int id = Integer.parseInt(ctx.request().getParam("id"));
+        JsonObject modifications = ctx.getBodyAsJson();
+        ToDo toDoToModify = toDoCollection.find(id);
+        toDoToModify.modify(modifications);
+        HttpServerResponse response = ctx.response();
+        response.putHeader("content-type", "application/json");
+        response.end(toDoToModify.toString());
+    }
 
+    public static void deleteToDo(RoutingContext ctx) {
+        int id = Integer.parseInt(ctx.request().getParam("id"));
+        toDoCollection.remove(id);
+        getAll(ctx);
     }
 
     public static void clear(RoutingContext ctx) {

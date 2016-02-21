@@ -40,6 +40,9 @@ public class ToDoCollection {
         int index = counter.incrementAndGet();
         newToDo.setId(index);
         newToDo.setUrl(url+index);
+        if (jsonObject.containsKey("order")) {
+            newToDo.setOrder(jsonObject.getInteger("order"));
+        }
         todos.put(index, newToDo);
         writeLock.unlock();
         return newToDo;
@@ -47,6 +50,10 @@ public class ToDoCollection {
 
     public ToDo find(int index) {
         return (ToDo) todos.get(index);
+    }
+
+    public void remove(int index) {
+        todos.remove(index);
     }
 
     @Override

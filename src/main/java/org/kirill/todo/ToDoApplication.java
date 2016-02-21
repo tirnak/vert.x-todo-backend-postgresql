@@ -40,8 +40,10 @@ public class ToDoApplication {
         router.options("/").handler(ToDoController::options);
         router.get("/").handler(ToDoController::getAll);
         router.get("/:id").handler(ToDoController::getById);
+        router.patch("/:id").handler(ToDoController::modifyToDo);
         router.post("/").handler(ToDoController::postToDo);
         router.delete("/").handler(ToDoController::clear);
+        router.delete("/:id").handler(ToDoController::deleteToDo);
 
         server.requestHandler(router::accept)
                 .listen(PortResolver.getPort(), "0.0.0.0");
