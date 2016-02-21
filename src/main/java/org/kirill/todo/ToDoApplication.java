@@ -27,6 +27,7 @@ public class ToDoApplication {
 
             HttpServerResponse response = routingContext.response();
             response.putHeader("content-type", "application/json");
+            addCorsHeaders(response);
             response.end(Json.encode(new ArrayList<>(todos.values())));
         });
         router.route(HttpMethod.POST, "/:name").handler(routingContext -> {
@@ -35,12 +36,18 @@ public class ToDoApplication {
             HttpServerResponse response = routingContext.response();
             response.putHeader("content-type", "text/plain");
             String name = routingContext.request().getParam("name");
-            // Write to the response and end it
+            addCorsHeaders(response);
             response.end("Hello, " + name + ", from Vert.x-Web!");
         });
 
         server.requestHandler(router::accept)
-                .listen(Integer.parseInt(System.getenv("PORT")), "0.0.0.0");
+                .listen(8080, "0.0.0.0");
+    }
+
+    private static void addCorsHeaders(HttpServerResponse response) {
+        response.putHeader("Access-Control-Allow-Origin", "*")
+                .putHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+                .putHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
     }
 
     private static void fillTodos() {
