@@ -3,13 +3,10 @@ package org.kirill.todo.model;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 
-import java.util.ArrayList;
-
 /**
- * Created by kirill on 18.02.16.
+ * Created by kirill on 21.02.16.
  */
 public class ToDo {
-
 
     private int id;
     private String title;
@@ -19,14 +16,6 @@ public class ToDo {
 
     public ToDo(String title) {
         this.title = title;
-    }
-
-    public ToDo(int id, String title, Boolean completed, Integer order, String url) {
-        this.id = id;
-        this.title = title;
-        this.completed = completed;
-        this.order = order;
-        this.url = url;
     }
 
     public void modify(JsonObject jsonObject) {
@@ -39,18 +28,6 @@ public class ToDo {
         if (jsonObject.containsKey("order")) {
             order = jsonObject.getInteger("order");
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ToDo todo = (ToDo) o;
-
-        if (id != todo.id) return false;
-
-        return true;
     }
 
     @Override
