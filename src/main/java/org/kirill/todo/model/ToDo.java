@@ -1,9 +1,9 @@
-package org.kirill.todo;
+package org.kirill.todo.model;
 
 /**
  * Created by kirill on 18.02.16.
  */
-public class Activity {
+public class ToDo {
 
 
     private int id;
@@ -11,14 +11,14 @@ public class Activity {
     private Boolean completed;
     private Integer order;
 
-    public Activity() {
+    public ToDo() {
     }
 
-    public Activity(String title) {
+    public ToDo(String title) {
         this.title = title;
     }
 
-    public Activity(int id, String title, Boolean completed, Integer order) {
+    public ToDo(int id, String title, Boolean completed, Integer order) {
         this.id = id;
         this.title = title;
         this.completed = completed;
@@ -38,7 +38,7 @@ public class Activity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Activity todo = (Activity) o;
+        ToDo todo = (ToDo) o;
 
         if (id != todo.id) return false;
 
@@ -66,8 +66,8 @@ public class Activity {
         this.order = order;
     }
 
-    public Activity merge(Activity newTodo) {
-        return new Activity(id,
+    public ToDo merge(ToDo newTodo) {
+        return new ToDo(id,
                 nonNull(newTodo.title, title),
                 nonNull(newTodo.completed, completed),
                 nonNull(newTodo.order, order));
