@@ -19,13 +19,21 @@ public class ToDoApplication {
     private static Map<Integer, Activity> todos = new HashMap<>();
 
     public static void main(String[] args) {
-        System.out.println(PortResolver.port);
+        System.out.println(PortResolver.getPort());
+        // mock
         fillTodos();
         Vertx vertx = Vertx.vertx();
         HttpServer server = vertx.createHttpServer();
 
         Router router = Router.router(vertx);
 
+        router.route(HttpMethod.OPTIONS, "/").handler(routingContext -> {
+
+            HttpServerResponse response = routingContext.response();
+            response.putHeader("content-type", "application/json");
+            addCorsHeaders(response);
+            response.end(Json.encode(new ArrayList<>(todos.values())));
+        });
         router.route(HttpMethod.GET, "/").handler(routingContext -> {
 
             HttpServerResponse response = routingContext.response();
@@ -44,7 +52,7 @@ public class ToDoApplication {
         });
 
         server.requestHandler(router::accept)
-                .listen(PortResolver.port, "0.0.0.0");
+                .listen(PortResolver.getPort(), "0.0.0.0");
     }
 
     private static void addCorsHeaders(HttpServerResponse response) {
@@ -60,83 +68,3 @@ public class ToDoApplication {
     }
 
 }
-
-//
-//private Set<Todo> todos = new HashSet<>();
-//
-//        @RequestMapping(method = GET)
-//        public HttpEntity<Collection<ResourceWithUrl>> listAll() {
-//        public HttpEntity<Collection<ResourceWithUrl>> listAll() {
-//            List<ResourceWithUrl> resourceWithUrls = todos.stream().map(todo -> toResource(todo)).collect(Collectors.toList());
-//            return new ResponseEntity<>(resourceWithUrls, OK);
-//        }
-//
-//        @RequestMapping(value = "/{todo-id}", method = GET)
-//        public HttpEntity<ResourceWithUrl> getTodo(@PathVariable("todo-id") long id) {
-//
-//            Optional<Todo> todoOptional = tryToFindById(id);
-//
-//            if (!todoOptional.isPresent())
-//                return new ResponseEntity<>(NOT_FOUND);
-//
-//            return respondWithResource(todoOptional.get(), OK);
-//        }
-//
-//        private Optional<Todo> tryToFindById(long id) {
-//            return todos.stream().filter(todo -> todo.getId() == id).findFirst();
-//        }
-//
-//        @RequestMapping(method = POST,  headers = {"Content-type=application/json"})
-//        public HttpEntity<ResourceWithUrl> saveTodo(@RequestBody Todo todo) {
-//            todo.setId(todos.size() + 1);
-//            todos.add(todo);
-//
-//            return respondWithResource(todo, CREATED);
-//        }
-//
-//        @RequestMapping(method = DELETE)
-//        public void deleteAllTodos() {
-//            todos.clear();
-//        }
-//
-//        @RequestMapping(value = "/{todo-id}", method = DELETE)
-//        public void deleteOneTodo(@PathVariable("todo-id") long id) {
-//            Optional<Todo> todoOptional = tryToFindById(id);
-//
-//            if ( todoOptional.isPresent() ) {
-//                todos.remove(todoOptional.get());
-//            }
-//        }
-//
-//        @RequestMapping(value = "/{todo-id}", method = PATCH, headers = {"Content-type=application/json"})
-//        public HttpEntity<ResourceWithUrl> updateTodo(@PathVariable("todo-id") long id, @RequestBody Todo newTodo) {
-//            Optional<Todo> todoOptional = tryToFindById(id);
-//
-//            if ( !todoOptional.isPresent() ) {
-//                return new ResponseEntity<>(NOT_FOUND);
-//            } else if ( newTodo == null ) {
-//                return new ResponseEntity<>(BAD_REQUEST);
-//            }
-//
-//            todos.remove(todoOptional.get());
-//
-//            Todo mergedTodo = todoOptional.get().merge(newTodo);
-//            todos.add(mergedTodo);
-//
-//            return respondWithResource(mergedTodo, OK);
-//        }
-//
-//
-//        private String getHref(Todo todo) {
-//            return linkTo(methodOn(this.getClass()).getTodo(todo.getId())).withSelfRel().getHref();
-//        }
-//
-//        private ResourceWithUrl toResource(Todo todo) {
-//            return new ResourceWithUrl(todo, getHref(todo));
-//        }
-//
-//        private HttpEntity<ResourceWithUrl> respondWithResource(Todo todo, HttpStatus statusCode) {
-//            ResourceWithUrl resourceWithUrl = toResource(todo);
-//
-//            return new ResponseEntity<>(resourceWithUrl, statusCode);
-//        }
