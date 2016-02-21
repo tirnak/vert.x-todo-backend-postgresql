@@ -7,6 +7,8 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.Json;
 import io.vertx.ext.web.Router;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**ls
@@ -17,6 +19,7 @@ public class ToDoApplication {
     private static Map<Integer, Activity> todos = new HashMap<>();
 
     public static void main(String[] args) {
+        System.out.println(PortResolver.port);
         fillTodos();
         Vertx vertx = Vertx.vertx();
         HttpServer server = vertx.createHttpServer();
@@ -41,7 +44,7 @@ public class ToDoApplication {
         });
 
         server.requestHandler(router::accept)
-                .listen(8080, "0.0.0.0");
+                .listen(PortResolver.port, "0.0.0.0");
     }
 
     private static void addCorsHeaders(HttpServerResponse response) {
@@ -55,6 +58,7 @@ public class ToDoApplication {
         todos.put(2, new Activity(2, "Hell, yeah!", false, 3));
         todos.put(3, new Activity(3, "Hell, yeah!", false, 1));
     }
+
 }
 
 //
