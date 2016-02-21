@@ -31,16 +31,17 @@ public class ToDoCollection {
         writeLock.unlock();
     }
 
-    public void add(JsonObject jsonObject) {
+    public ToDo add(JsonObject jsonObject) {
         writeLock.lock();
         if (!jsonObject.containsKey("title")) {
             throw new IllegalArgumentException("new todo item must contain title");
         }
         ToDo newToDo = new ToDo(jsonObject.getString("title"));
         int index = counter.incrementAndGet();
-        newToDo.setId(index);
+        newToDo.setIdAndUrl(index);
         todos.put(index, newToDo);
         writeLock.unlock();
+        return newToDo;
     }
 
     @Override

@@ -1,5 +1,9 @@
 package org.kirill.todo.model;
 
+import io.vertx.core.json.Json;
+
+import java.util.ArrayList;
+
 /**
  * Created by kirill on 18.02.16.
  */
@@ -8,29 +12,22 @@ public class ToDo {
 
     private int id;
     private String title;
-    private Boolean completed;
-    private Integer order;
+    private boolean completed;
+    private int order;
+    private String url;
 
-    public ToDo() {
-    }
+    public ToDo() {}
 
     public ToDo(String title) {
         this.title = title;
     }
 
-    public ToDo(int id, String title, Boolean completed, Integer order) {
+    public ToDo(int id, String title, Boolean completed, Integer order, String url) {
         this.id = id;
         this.title = title;
         this.completed = completed;
         this.order = order;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+        this.url = url;
     }
 
     @Override
@@ -50,38 +47,50 @@ public class ToDo {
         return id;
     }
 
-    public boolean isCompleted() {
-        return nonNull(completed,false);
+    public void setIdAndUrl(int id) {
+        this.id = id;
+        this.url = id + "";
     }
 
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
+    @Override
+    public String toString() {
+        return Json.encode(this);
+    }
+
+    /**
+     * trivial getters/setters
+     * promarily for JSONing
+     */
+    public boolean isCompleted() {
+        return completed;
     }
 
     public int getOrder() {
-        return nonNull(order, 0);
+        return order;
     }
 
     public void setOrder(Integer order) {
         this.order = order;
     }
 
-    public ToDo merge(ToDo newTodo) {
-        return new ToDo(id,
-                nonNull(newTodo.title, title),
-                nonNull(newTodo.completed, completed),
-                nonNull(newTodo.order, order));
-    }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public Boolean getCompleted() {
+        return completed;
     }
 
-    private <T> T nonNull(T value, T defaultValue) {
-        return value == null ? defaultValue : value;
+    public String getUrl() {
+        return url;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

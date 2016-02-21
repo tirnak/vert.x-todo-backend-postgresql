@@ -4,6 +4,7 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
+import org.kirill.todo.model.ToDo;
 import org.kirill.todo.model.ToDoCollection;
 
 import java.util.ArrayList;
@@ -27,12 +28,12 @@ public class ToDoController {
     }
 
     public static void postToDo(RoutingContext ctx) {
-        JsonObject newToDo = ctx.getBodyAsJson();
+        JsonObject newToDoJson = ctx.getBodyAsJson();
         // This handler will be called for every request
         HttpServerResponse response = ctx.response();
         response.putHeader("content-type", "application/json");
-        toDoCollection.add(newToDo);
-        response.end(newToDo.encode());
+        ToDo newToDo = toDoCollection.add(newToDoJson);
+        response.end(newToDo.toString());
     }
 
     public static void clear(RoutingContext ctx) {
