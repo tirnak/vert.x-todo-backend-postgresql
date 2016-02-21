@@ -31,23 +31,28 @@ public class ToDoCollection {
         writeLock.unlock();
     }
 
-    public ToDo add(JsonObject jsonObject) {
+    public ToDo add(JsonObject jsonObject, String url) {
         writeLock.lock();
         if (!jsonObject.containsKey("title")) {
             throw new IllegalArgumentException("new todo item must contain title");
         }
         ToDo newToDo = new ToDo(jsonObject.getString("title"));
         int index = counter.incrementAndGet();
-        newToDo.setIdAndUrl(index);
+        newToDo.setId(index);
+        newToDo.setUrl(url+index);
         todos.put(index, newToDo);
         writeLock.unlock();
         return newToDo;
     }
 
+    public ToDo find(int index) {
+        return (ToDo) todos.get(index);
+    }
+
     @Override
     public String toString() {
         readLock.lock();
-        String toReturn = Json.encode(new ArrayList<ToDo>(todos.values()));
+        String toReturn = Json.encode(new ArrayList<>(todos.values()));
         readLock.unlock();
         return toReturn;
     }

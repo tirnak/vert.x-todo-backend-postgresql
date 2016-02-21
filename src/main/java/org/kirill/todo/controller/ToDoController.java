@@ -27,13 +27,25 @@ public class ToDoController {
         response.end(toDoCollection.toString());
     }
 
+    public static void getById(RoutingContext ctx) {
+        int id = Integer.parseInt(ctx.request().getParam("id"));
+        HttpServerResponse response = ctx.response();
+        response.putHeader("content-type", "application/json");
+        response.end(toDoCollection.find(id).toString());
+    }
+
     public static void postToDo(RoutingContext ctx) {
         JsonObject newToDoJson = ctx.getBodyAsJson();
         // This handler will be called for every request
         HttpServerResponse response = ctx.response();
         response.putHeader("content-type", "application/json");
-        ToDo newToDo = toDoCollection.add(newToDoJson);
+        String currentUrl = ctx.request().absoluteURI();
+        ToDo newToDo = toDoCollection.add(newToDoJson, currentUrl);
         response.end(newToDo.toString());
+    }
+
+    public static void modifyToDo(RoutingContext ctx) {
+
     }
 
     public static void clear(RoutingContext ctx) {

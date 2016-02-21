@@ -31,6 +31,7 @@ public class ToDoApplication {
                 .allowedMethod(HttpMethod.POST)
                 .allowedMethod(HttpMethod.OPTIONS)
                 .allowedMethod(HttpMethod.DELETE)
+                .allowedMethod(HttpMethod.PATCH)
                 .allowedHeader("X-PINGARUNER")
                 .allowedHeader("Content-Type"));
         router.route().handler(BodyHandler.create());
@@ -38,6 +39,7 @@ public class ToDoApplication {
 
         router.options("/").handler(ToDoController::options);
         router.get("/").handler(ToDoController::getAll);
+        router.get("/:id").handler(ToDoController::getById);
         router.post("/").handler(ToDoController::postToDo);
         router.delete("/").handler(ToDoController::clear);
 

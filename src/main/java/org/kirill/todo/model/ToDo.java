@@ -16,8 +16,6 @@ public class ToDo {
     private int order;
     private String url;
 
-    public ToDo() {}
-
     public ToDo(String title) {
         this.title = title;
     }
@@ -43,16 +41,6 @@ public class ToDo {
     }
 
     @Override
-    public int hashCode() {
-        return id;
-    }
-
-    public void setIdAndUrl(int id) {
-        this.id = id;
-        this.url = id + "";
-    }
-
-    @Override
     public String toString() {
         return Json.encode(this);
     }
@@ -73,7 +61,6 @@ public class ToDo {
         this.order = order;
     }
 
-
     public int getId() {
         return id;
     }
@@ -93,4 +80,13 @@ public class ToDo {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 }
