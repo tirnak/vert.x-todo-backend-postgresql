@@ -1,15 +1,18 @@
     package org.kirill.todo;
 
-import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpMethod;
-import io.vertx.core.http.HttpServer;
-import io.vertx.core.http.HttpServerResponse;
-import io.vertx.core.json.Json;
-import io.vertx.ext.web.Router;
+    import io.vertx.core.Vertx;
+    import io.vertx.core.http.HttpMethod;
+    import io.vertx.core.http.HttpServer;
+    import io.vertx.core.http.HttpServerResponse;
+    import io.vertx.core.json.Json;
+    import io.vertx.core.json.JsonObject;
+    import io.vertx.ext.web.Router;
+    import io.vertx.ext.web.handler.BodyHandler;
+    import io.vertx.ext.web.handler.CorsHandler;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+    import java.util.ArrayList;
+    import java.util.HashMap;
+    import java.util.Map;
 
 /**ls
  * Created by kirill on 18.02.16.
@@ -27,38 +30,37 @@ public class ToDoApplication {
 
         Router router = Router.router(vertx);
 
-        router.route(HttpMethod.OPTIONS, "/").handler(routingContext -> {
+        router.route().handler(CorsHandler.create("*")
+                .allowedMethod(HttpMethod.GET)
+                .allowedMethod(HttpMethod.POST)
+                .allowedMethod(HttpMethod.OPTIONS)
+                .allowedHeader("X-PINGARUNER")
+                .allowedHeader("Content-Type"));
+        router.route().handler(BodyHandler.create());
+
+
+        router.options("/").handler(routingContext -> {
+            HttpServerResponse response = routingContext.response();
+            response.putHeader("content-type", "application/json");
+            response.end(Json.encode(new ArrayList<>(todos.values())));
+        });
+        router.get("/").handler(routingContext -> {
 
             HttpServerResponse response = routingContext.response();
             response.putHeader("content-type", "application/json");
-            addCorsHeaders(response);
             response.end(Json.encode(new ArrayList<>(todos.values())));
         });
-        router.route(HttpMethod.GET, "/").handler(routingContext -> {
-
-            HttpServerResponse response = routingContext.response();
-            response.putHeader("content-type", "application/json");
-            addCorsHeaders(response);
-            response.end(Json.encode(new ArrayList<>(todos.values())));
-        });
-        router.route(HttpMethod.POST, "/:name").handler(routingContext -> {
-
+        router.post("/").handler(routingContext -> {
+            JsonObject task = routingContext.getBodyAsJson();
             // This handler will be called for every request
             HttpServerResponse response = routingContext.response();
-            response.putHeader("content-type", "text/plain");
-            String name = routingContext.request().getParam("name");
-            addCorsHeaders(response);
-            response.end("Hello, " + name + ", from Vert.x-Web!");
+            response.putHeader("content-type", "application/json");
+
+            response.end(task.encode());
         });
 
         server.requestHandler(router::accept)
                 .listen(PortResolver.getPort(), "0.0.0.0");
-    }
-
-    private static void addCorsHeaders(HttpServerResponse response) {
-        response.putHeader("Access-Control-Allow-Origin", "*")
-                .putHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-                .putHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
     }
 
     private static void fillTodos() {
