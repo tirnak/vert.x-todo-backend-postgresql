@@ -27,12 +27,12 @@ public class ToDoController {
     }
 
     public static void postToDo(RoutingContext ctx) {
-        JsonObject task = ctx.getBodyAsJson();
+        JsonObject newToDo = ctx.getBodyAsJson();
         // This handler will be called for every request
         HttpServerResponse response = ctx.response();
         response.putHeader("content-type", "application/json");
-
-        response.end(task.encode());
+        toDoCollection.add(newToDo);
+        response.end(newToDo.encode());
     }
 
     public static void clear(RoutingContext ctx) {
