@@ -6,10 +6,9 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.asyncsql.AsyncSQLClient;
 import io.vertx.ext.asyncsql.PostgreSQLClient;
-import org.kirill.todo.db.ConfigFactory;
+import io.vertx.ext.sql.UpdateResult;
 import org.kirill.todo.model.ToDo;
-
-import java.sql.SQLException;
+import io.vertx.ext.sql.ResultSet;
 
 /**
  * Created by kirill on 17.03.16.
@@ -31,7 +30,6 @@ public class ToDoDBHandler {
                     "   title       TEXT    NOT NULL," +
                     "   completed   BOOLEAN NOT NULL," +
                     "   orderx       INTEGER," +
-                    "   url         TEXT" +
                     ");", res2 -> {
                         if (! res2.succeeded()) {
                             System.out.println(res2.cause());
@@ -41,35 +39,44 @@ public class ToDoDBHandler {
         });
     }
 
-    public static void insert(ToDo toDo, Handler<AsyncResult> next) throws SQLException {
+    public static void insert(ToDo toDo, Handler<AsyncResult<UpdateResult>> next) {
         client.getConnection(connRes -> connRes.result()
-            .execute("INSERT INTO Todo VALUES" +
-                "('" + toDo.getTitle() + "', " + toDo.getCompleted()
-                + ", " + toDo.getOrder() + ", '" + toDo.getUrl() + "');",
-                res -> next.handle(res))
+            .update("INSERT INTO Todo VALUES" +
+                            "('" + toDo.getTitle() + "', " + toDo.getCompleted()
+                            + ", " + toDo.getOrder() + "');",
+                    res -> next.handle(res))
         );
     }
 
-    public static void update(ToDo toDo) throws SQLException {
+    public static void selectAll(Handler<AsyncResult<ResultSet>> next) {
         client.getConnection(res -> res.result()
-            .execute("UPDATE Todo SET title='" +
-            toDo.getTitle() + "', completed=" + toDo.getCompleted()
-            + ", order=" + toDo.getOrder() + " WHERE id = " + toDo.getId() + ";",
+            .execute("SELECT * FROM Todo",
             ignored -> {})
         );
     }
 
-    public static void delete(int id) throws SQLException {
+    public static void select(int id, Handler<AsyncResult<ResultSet>> next) {
         client.getConnection(res -> res.result()
-            .execute("DELETE FROM Todo WHERE id = " + id + ";",
+            .execute("SELECT * FROM Todo WHERE id = " + id + ";",
             ignored -> {})
         );
     }
 
-    public static void deleteAll() throws SQLException {
+    public static void update(int id, JsonObject newParams, Handler<AsyncResult<UpdateResult>> next) {
         client.getConnection(res -> res.result()
-            .execute("DELETE FROM Todo;",
-            ignored -> {})
+            .update(ToDoSQLComposer.ComposeUpdateString(id, newParams), next::handle)
+        );
+    }
+
+    public static void delete(int id, Handler<AsyncResult<UpdateResult>> next) {
+        client.getConnection(res -> res.result()
+            .update("DELETE FROM Todo WHERE id = " + id + ";", next::handle)
+        );
+    }
+
+    public static void deleteAll(Handler<AsyncResult<UpdateResult>> next) {
+        client.getConnection(res -> res.result()
+            .update("DELETE FROM Todo;", next::handle)
         );
     }
 
