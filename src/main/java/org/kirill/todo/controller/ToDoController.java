@@ -13,7 +13,7 @@ import org.kirill.todo.model.ToDo;
  */
 public class ToDoController {
 
-    private static String currentUrl;
+    public static String currentUrl;
 
     public static void options(RoutingContext ctx) {
         ctx.response().end();

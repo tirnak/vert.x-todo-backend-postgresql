@@ -42,7 +42,7 @@ public class ToDoDBHandler {
     public static void insert(ToDo toDo, Handler<AsyncResult<UpdateResult>> next) {
         client.getConnection(connRes -> connRes.result()
             .update("INSERT INTO Todo VALUES" +
-                            "('" + toDo.getTitle() + "', " + toDo.getCompleted()
+                            "('" + toDo.getTitle() + "', " + toDo.isCompleted()
                             + ", " + toDo.getOrder() + "');",
                     res -> next.handle(res))
         );

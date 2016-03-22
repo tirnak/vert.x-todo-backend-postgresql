@@ -2,10 +2,13 @@ package org.kirill.todo.model;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.ext.sql.ResultSet;
+import org.kirill.todo.controller.ToDoController;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
+import static org.kirill.todo.controller.ToDoController.currentUrl;
 
 /**
  * Created by kise0116 on 22.03.2016.
@@ -42,6 +45,9 @@ public class ResultSetToToDoMapper {
             tempToDo.setId(             row.getInteger(0));
             tempToDo.setCompleted(      row.getBoolean(3));
             tempToDo.setOrder(          row.getInteger(3));
+            if (currentUrl != null) {
+                tempToDo.setUrl(currentUrl + row.getInteger(0));
+            }
             command.accept(tempToDo);
         }
 

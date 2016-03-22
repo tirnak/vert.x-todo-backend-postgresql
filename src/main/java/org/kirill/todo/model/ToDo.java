@@ -18,18 +18,6 @@ public class ToDo {
         this.title = title;
     }
 
-    public void modify(JsonObject jsonObject) {
-        if (jsonObject.containsKey("title")) {
-            title = jsonObject.getString("title");
-        }
-        if (jsonObject.containsKey("completed")) {
-            completed = jsonObject.getBoolean("completed");
-        }
-        if (jsonObject.containsKey("order")) {
-            order = jsonObject.getInteger("order");
-        }
-    }
-
     @Override
     public String toString() {
         return Json.encode(this);
@@ -61,10 +49,6 @@ public class ToDo {
 
     public void setOrder(int order) {
         this.order = order;
-    }
-
-    public Boolean getCompleted() {
-        return completed;
     }
 
     public String getUrl() {

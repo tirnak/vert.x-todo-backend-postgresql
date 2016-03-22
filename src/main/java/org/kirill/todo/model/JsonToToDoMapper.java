@@ -1,6 +1,9 @@
 package org.kirill.todo.model;
 
 import io.vertx.core.json.JsonObject;
+import org.kirill.todo.controller.ToDoController;
+
+import static org.kirill.todo.controller.ToDoController.*;
 
 /**
  * Created by kise0116 on 22.03.2016.
@@ -15,6 +18,13 @@ public class JsonToToDoMapper {
         }
         if (jsonObject.containsKey("order")) {
             newToDo.setOrder(jsonObject.getInteger("order"));
+        }
+        if (jsonObject.containsKey("id")) {
+            int id = jsonObject.getInteger("id");
+            newToDo.setId(id);
+            if (currentUrl != null) {
+                newToDo.setUrl(currentUrl + id);
+            }
         }
         return newToDo;
     }
