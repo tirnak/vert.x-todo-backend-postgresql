@@ -44,7 +44,7 @@ public class ToDoDBHandler {
                     "   id          SERIAL  PRIMARY KEY," +
                     "   title       TEXT    NOT NULL," +
                     "   completed   BOOLEAN NOT NULL," +
-                    "   orderx       INTEGER," +
+                    "   orderx       INTEGER" +
                     ");", res2 -> {
                         if (! res2.succeeded()) {
                             System.out.println(res2.cause());
@@ -56,8 +56,15 @@ public class ToDoDBHandler {
 
     public static void insert(ToDo toDo, Handler<AsyncResult<UpdateResult>> next) {
         applyToConnection(res -> res.update(
-            "INSERT INTO Todo VALUES" + "('" + toDo.getTitle() + "', " + toDo.isCompleted()
-            + ", " + toDo.getOrder() + "');", next::handle)
+            "INSERT INTO Todo (title, completed, orderx) VALUES"
+            + "('" + toDo.getTitle() + "', " + toDo.isCompleted()
+            + ", " + toDo.getOrder() + ") RETURNING id;", next::handle)
+        );
+    }
+
+    public static void getLastInserted(Handler<AsyncResult<ResultSet>> next) {
+        applyToConnection(res -> res.query(
+            "SELECT last_value from todo_id_seq;", next::handle)
         );
     }
 

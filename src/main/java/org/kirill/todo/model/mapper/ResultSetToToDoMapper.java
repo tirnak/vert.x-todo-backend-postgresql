@@ -39,7 +39,7 @@ public class ResultSetToToDoMapper {
 
     public static JsonArray convertToJsonArray (ResultSet resultSet) {
         JsonArray toDoList = new JsonArray();
-        iterate(resultSet).forEach(toDoList::add);
+        iterate(resultSet).forEach(toDo -> toDoList.add(toDo.toJsonObject()));
         return toDoList;
     }
 
@@ -56,7 +56,7 @@ public class ResultSetToToDoMapper {
         return results.getResults().stream().map(row -> {
             ToDo tempToDo = new ToDo(   row.getString(1));
             tempToDo.setId(             row.getInteger(0));
-            tempToDo.setCompleted(      row.getBoolean(3));
+            tempToDo.setCompleted(      row.getBoolean(2));
             tempToDo.setOrder(          row.getInteger(3));
             if (currentUrl != null) {
                 tempToDo.setUrl(currentUrl + row.getInteger(0));

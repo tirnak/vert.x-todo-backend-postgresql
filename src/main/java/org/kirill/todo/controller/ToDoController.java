@@ -2,6 +2,8 @@ package org.kirill.todo.controller;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.sql.ResultSet;
+import io.vertx.ext.sql.UpdateResult;
 import io.vertx.ext.web.RoutingContext;
 import org.kirill.todo.model.mapper.JsonToToDoMapper;
 import org.kirill.todo.db.ToDoDBHandler;
@@ -51,12 +53,12 @@ public class ToDoController {
         currentUrl = ctx.request().absoluteURI();
         JsonObject newToDoJson = ctx.getBodyAsJson();
         ToDo newToDo = JsonToToDoMapper.convert(newToDoJson);
-        ToDoDBHandler.insert(newToDo, ar -> {
-            int index = ar.result().getKeys().getInteger(0);
-            newToDo.setId(index);
-            newToDo.setUrl(currentUrl + index);
+        ToDoDBHandler.insert(newToDo, ignoredResult -> ToDoDBHandler.getLastInserted(res -> {
+            int newId = res.result().getResults().get(0).getInteger(0);
+            newToDo.setId(newId);
+            newToDo.setUrl(currentUrl + newId);
             ctx.response().end(newToDo.toString());
-        });
+        }));
 
     }
 

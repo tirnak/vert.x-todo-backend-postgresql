@@ -25,6 +25,12 @@ public class ToDo {
         return Json.encode(this);
     }
 
+    public JsonObject toJsonObject() {
+        return new JsonObject()
+                .put("id", id).put("title", title).put("url", url)
+                .put("order", order).put("completed", completed);
+    }
+
     /**
      * trivial getters/setters
      * primarily for JSON encoding/decoding
