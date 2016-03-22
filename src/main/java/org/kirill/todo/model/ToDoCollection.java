@@ -16,10 +16,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Created by kirill on 21.02.16.
  */
 public class ToDoCollection {
-    private AtomicInteger counter = new AtomicInteger();
-    private Map<Integer, ToDo> todos = new HashMap<>();
     private Lock readLock;
     private Lock writeLock;
+    private Map todos = new HashMap<>();
+    AtomicInteger counter = new AtomicInteger();
     {
         // less blocking, then synchronised
         ReadWriteLock lock = new ReentrantReadWriteLock();
@@ -63,7 +63,7 @@ public class ToDoCollection {
 
 
     public ToDo find(int index) {
-        return todos.get(index);
+        return (ToDo) todos.get(index);
     }
 
     public void remove(int index) {

@@ -7,12 +7,15 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CorsHandler;
 import org.kirill.todo.controller.ToDoController;
+import org.kirill.todo.db.ToDoDBHandler;
+
 /**
  * Created by kirill on 21.02.16.
  */
 public class ToDoApplication {
 
     public static void main(String[] args) {
+        ToDoDBHandler DBHandler = new ToDoDBHandler();
         System.out.println(PortResolver.getPort());
         Vertx vertx = Vertx.vertx();
         HttpServer server = vertx.createHttpServer();
