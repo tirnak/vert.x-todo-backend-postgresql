@@ -22,7 +22,7 @@ public class ConfigFactory {
          */
         Function4args<String, JsonObject> fill = (host,  username,  password,  database) -> new JsonObject()
                 .put("host", host).put("username", username)
-                .put("password", password).put("database", database);
+                .put("password", password).put("database", database).put("sslmode", "require");
 
         // first, initialize test values
         ResourceBundle bundle = ResourceBundle.getBundle("test");
