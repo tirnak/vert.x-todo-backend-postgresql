@@ -6,7 +6,9 @@ import org.kirill.todo.controller.ToDoController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import static org.kirill.todo.controller.ToDoController.currentUrl;
 
@@ -26,21 +28,24 @@ public class ResultSetToToDoMapper {
      */
 
     public static List<ToDo> convertToList (ResultSet resultSet) {
-        List<JsonArray> results = resultSet.getResults();
         List<ToDo> toDoList = new ArrayList<>();
-        iterate(results, toDoList::add);
+        iterate(resultSet).forEach(toDoList::add);
         return toDoList;
     }
 
     public static JsonArray convertToJsonArray (ResultSet resultSet) {
-        List<JsonArray> results = resultSet.getResults();
         JsonArray toDoList = new JsonArray();
-        iterate(results, toDoList::add);
+        iterate(resultSet).forEach(toDoList::add);
         return toDoList;
     }
 
-    private static void iterate(List<JsonArray> results,  Consumer<ToDo> command) {
-        for (JsonArray row: results) {
+    public static ToDo convertFirst (ResultSet resultSet) {
+        Optional<ToDo> optional = iterate(resultSet).findFirst();
+        return optional.get();
+    }
+
+    private static Stream<ToDo> iterate(ResultSet results) {
+        return results.getResults().stream().map(row -> {
             ToDo tempToDo = new ToDo(   row.getString(1));
             tempToDo.setId(             row.getInteger(0));
             tempToDo.setCompleted(      row.getBoolean(3));
@@ -48,9 +53,8 @@ public class ResultSetToToDoMapper {
             if (currentUrl != null) {
                 tempToDo.setUrl(currentUrl + row.getInteger(0));
             }
-            command.accept(tempToDo);
-        }
-
+            return tempToDo;
+        });
     }
 
 

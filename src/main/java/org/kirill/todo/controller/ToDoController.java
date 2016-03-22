@@ -57,7 +57,7 @@ public class ToDoController {
         JsonObject modifications = ctx.getBodyAsJson();
         ToDoDBHandler.update(id, modifications, updateResultAsyncResult -> {
             ToDoDBHandler.select(id, resultSetAsyncResult -> {
-                ToDo changed = ResultSetToToDoMapper.convertToList(resultSetAsyncResult.result()).get(0);
+                ToDo changed = ResultSetToToDoMapper.convertFirst(resultSetAsyncResult.result());
                 ctx.response().end(changed.toString());
             });
         });
