@@ -15,7 +15,6 @@ import org.kirill.todo.db.ToDoDBHandler;
 public class ToDoApplication {
 
     public static void main(String[] args) {
-        ToDoDBHandler DBHandler = new ToDoDBHandler();
         System.out.println(PortResolver.getPort());
         Vertx vertx = Vertx.vertx();
         HttpServer server = vertx.createHttpServer();
@@ -34,12 +33,18 @@ public class ToDoApplication {
 
         router.route().handler(BodyHandler.create());
 
-        // to avoid writing it in every handler
+        // to avoid writing content-type in every handler
         router.route("/").handler(ctx -> {
             ctx.response().putHeader("content-type", "application/json");
             ctx.next();
         });
 
+        /**
+         *  Route all possible requests within applications
+         *  to ToDoController methods
+         *
+         *  listen 0.0.0.0 for connecting from any ip
+         */
         router.options("/").handler(ToDoController::options);
 
         router.get("/").handler(ToDoController::getAll);

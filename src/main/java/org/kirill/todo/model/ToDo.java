@@ -5,6 +5,8 @@ import io.vertx.core.json.JsonObject;
 
 /**
  * Created by kirill on 21.02.16.
+ *
+ * POJO class
  */
 public class ToDo {
 
@@ -25,7 +27,7 @@ public class ToDo {
 
     /**
      * trivial getters/setters
-     * promarily for JSONing
+     * primarily for JSON encoding/decoding
      */
     public boolean isCompleted() {
         return completed;

@@ -2,6 +2,10 @@ package org.kirill.todo;
 
 /**
  * Created by kirill on 21.02.16.
+ *
+ * For local start - 8080 is good enough.
+ * However, Heroku has it's own ideas about default port
+ * and tells us by System.getenv("PORT")
  */
 public class PortResolver {
     private static int port;
@@ -17,6 +21,7 @@ public class PortResolver {
      * hence - log and exit
      */
     private static void initPort() {
+        // next line should be replaced with your USER env value
         if ("kirill".equals(System.getenv("USER"))) {
             port = 8080;
         } else if (System.getenv("PORT") != null) {

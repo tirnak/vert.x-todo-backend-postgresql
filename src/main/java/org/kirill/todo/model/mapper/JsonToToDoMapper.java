@@ -1,14 +1,17 @@
-package org.kirill.todo.model;
+package org.kirill.todo.model.mapper;
 
 import io.vertx.core.json.JsonObject;
-import org.kirill.todo.controller.ToDoController;
+import org.kirill.todo.model.ToDo;
 
-import static org.kirill.todo.controller.ToDoController.*;
+import static org.kirill.todo.controller.ToDoController.currentUrl;
 
 /**
  * Created by kise0116 on 22.03.2016.
+ *
+ * Mapping Json objects to new To Do instance
  */
 public class JsonToToDoMapper {
+
     public static ToDo convert (JsonObject jsonObject) {
         checkTitle(jsonObject);
         ToDo newToDo = new ToDo(jsonObject.getString("title"));

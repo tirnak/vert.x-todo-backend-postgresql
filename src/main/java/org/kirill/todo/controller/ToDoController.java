@@ -3,18 +3,27 @@ package org.kirill.todo.controller;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
-import org.kirill.todo.model.JsonToToDoMapper;
+import org.kirill.todo.model.mapper.JsonToToDoMapper;
 import org.kirill.todo.db.ToDoDBHandler;
-import org.kirill.todo.model.ResultSetToToDoMapper;
+import org.kirill.todo.model.mapper.ResultSetToToDoMapper;
 import org.kirill.todo.model.ToDo;
 
 /**
  * Created by kirill on 21.02.16.
+ *
+ * To Do controller handles all HTTP requests.
+ * Mostly, by interacting with DB by means of ToDoDBHandler and
+ * Mapper classes
+ *
  */
 public class ToDoController {
 
     public static String currentUrl;
 
+    /**
+     * Just stub to pass backend tests
+     * @param ctx
+     */
     public static void options(RoutingContext ctx) {
         ctx.response().end();
     }

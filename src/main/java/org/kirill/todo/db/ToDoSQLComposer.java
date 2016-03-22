@@ -6,6 +6,9 @@ import java.util.StringJoiner;
 
 /**
  * Created by kise0116 on 22.03.2016.
+ *
+ * String composition can be rather complex,
+ * so some are taken out here for clarity
  */
 public class ToDoSQLComposer {
     public static String ComposeUpdateString(int id, JsonObject newParams) {
@@ -18,7 +21,7 @@ public class ToDoSQLComposer {
             params.add("completed=" + newParams.getString("completed"));
         }
         if (newParams.containsKey("order")) {
-            params.add("order=" + newParams.getString("order"));
+            params.add("orderx=" + newParams.getString("order"));
         }
         if (params.length() == 0) {
             throw new IllegalArgumentException("no info for update is provided");
