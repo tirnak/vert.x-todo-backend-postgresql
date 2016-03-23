@@ -24,31 +24,41 @@ public class ConfigFactory {
                 .put("host", host).put("username", username)
                 .put("password", password).put("database", database).put("sslmode", "require");
 
-        // first, initialize test values
-        ResourceBundle bundle = ResourceBundle.getBundle("test");
+        /**
+         *  First, try to get environment variable heroku.
+         *  "heroku" can be set within heroku project directory by
+         *  $ heroku config:set heroku=your_host\;your_username\;your_password\;name_of_database
+         */
+        String concatenated = System.getenv("heroku");
+        if (concatenated != null) {
+            String[] split = concatenated.split(";");
+            return fill.apply(split[0], split[1], split[2], split[3]);
+        }
+
+        // then, try to find properties file
+        ResourceBundle bundle = null;
 
         try {
-            // then, try to load DB configuration from local.properties
             bundle = ResourceBundle.getBundle("local");
         } catch (MissingResourceException ignored) {
-            /**
-             *  If local.properties file is not found, try to get environment variable heroku
-             *  "heroku" can be set within heroku project directory by
-             *  $ heroku config:set heroku=your_host\;your_username\;your_password\;name_of_database
-             */
-            String concatenated = System.getenv("heroku");
-            if (concatenated != null) {
-                String[] split = concatenated.split(";");
-                return fill.apply(split[0], split[1], split[2], split[3]);
+            System.out.println("local.properties not found");
+            try {
+                bundle = ResourceBundle.getBundle("test");
+            } catch (MissingResourceException ignored2) {
+                System.out.println("test.properties not found");
             }
-        } finally {
-            /**
-             * if local.properties file is found - use its values
-             * else - use test.properties
-             */
+        }
+
+        /**
+         * if local.properties file is found - use its values
+         * else - use test.properties
+         */
+        if (bundle != null) {
             return fill.apply(
                     bundle.getString("host"), bundle.getString("username"),
                     bundle.getString("password"), bundle.getString("database"));
+        } else {
+            throw new RuntimeException("Something went wring during getting the config");
         }
     }
 }
