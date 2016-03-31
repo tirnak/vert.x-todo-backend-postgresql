@@ -7,14 +7,26 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CorsHandler;
 import org.kirill.todo.controller.ToDoController;
+
 /**
  * Created by kirill on 21.02.16.
+ *
+ * Main application class
  */
 public class ToDoApplication {
 
+    private static String currentUrl = null;
+    public static void setOnceCurrentUrl(String url) {
+        if (currentUrl == null) {
+            currentUrl = url;
+        }
+    }
+    public static String getCurrentUrl() {
+        return currentUrl;
+    }
+
     public static void main(String[] args) {
-        System.out.println(PortResolver.getPort());
-        Vertx vertx = Vertx.vertx();
+        Vertx vertx = VertxSingleton.vertx;
         HttpServer server = vertx.createHttpServer();
 
         Router router = Router.router(vertx);
@@ -31,12 +43,20 @@ public class ToDoApplication {
 
         router.route().handler(BodyHandler.create());
 
-        // to avoid writing it in every handler
+        // to avoid writing content-type in every handler
+        // and setting current URL
         router.route("/").handler(ctx -> {
+            setOnceCurrentUrl(ctx.request().absoluteURI());
             ctx.response().putHeader("content-type", "application/json");
             ctx.next();
         });
 
+        /**
+         *  Route all possible requests within applications
+         *  to ToDoController methods
+         *
+         *  listen 0.0.0.0 for connecting from any ip
+         */
         router.options("/").handler(ToDoController::options);
 
         router.get("/").handler(ToDoController::getAll);

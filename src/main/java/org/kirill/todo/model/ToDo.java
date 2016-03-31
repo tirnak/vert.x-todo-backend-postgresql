@@ -5,6 +5,8 @@ import io.vertx.core.json.JsonObject;
 
 /**
  * Created by kirill on 21.02.16.
+ *
+ * POJO class
  */
 public class ToDo {
 
@@ -18,26 +20,20 @@ public class ToDo {
         this.title = title;
     }
 
-    public void modify(JsonObject jsonObject) {
-        if (jsonObject.containsKey("title")) {
-            title = jsonObject.getString("title");
-        }
-        if (jsonObject.containsKey("completed")) {
-            completed = jsonObject.getBoolean("completed");
-        }
-        if (jsonObject.containsKey("order")) {
-            order = jsonObject.getInteger("order");
-        }
-    }
-
     @Override
     public String toString() {
         return Json.encode(this);
     }
 
+    public JsonObject toJsonObject() {
+        return new JsonObject()
+                .put("id", id).put("title", title).put("url", url)
+                .put("order", order).put("completed", completed);
+    }
+
     /**
      * trivial getters/setters
-     * promarily for JSONing
+     * primarily for JSON encoding/decoding
      */
     public boolean isCompleted() {
         return completed;
@@ -61,10 +57,6 @@ public class ToDo {
 
     public void setOrder(int order) {
         this.order = order;
-    }
-
-    public Boolean getCompleted() {
-        return completed;
     }
 
     public String getUrl() {
